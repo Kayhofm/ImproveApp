@@ -4,6 +4,8 @@ import { AppShell } from "@/components/layout/AppShell";
 import { getCurrentProfile } from "@/lib/auth/session";
 import { ROLES } from "@/lib/auth/roles";
 
+export const dynamic = "force-dynamic";
+
 export default async function DashboardLayout({
   children,
 }: {

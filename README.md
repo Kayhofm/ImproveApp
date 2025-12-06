@@ -65,9 +65,43 @@ Row-Level Security rules ensure users can only mutate their own entries/logs, wh
 
 ## Deployments
 
-- **Vercel**: connect the GitHub repo, add Supabase env vars, enable preview deployments
-- **Supabase**: store service role key as Vercel secret; schedule backups
-- **Railway/cron (optional)**: future insights aggregations or reminders
+### Vercel (Next.js frontend)
+
+1. **Connect the repo**
+	- Push `main` to GitHub (`Kayhofm/ImproveApp`).
+	- In the Vercel dashboard choose **Add New Project → Import Git Repository** and select `ImproveApp`.
+2. **Configure build settings** *(defaults work)*
+	- Framework preset: `Next.js`
+	- Install command: `npm install`
+	- Build command: `npm run build`
+	- Output directory: `.vercel/output` (set automatically by Vercel for Next.js 13+)
+3. **Set environment variables** for **Production**, **Preview**, and **Development**: 
+	- `NEXT_PUBLIC_SUPABASE_URL`
+	- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+	- `SUPABASE_SERVICE_ROLE_KEY` *(server-side API routes only; treat as secret)*
+	- (Optional) `NEXT_PUBLIC_SITE_URL` if you link Supabase Auth redirects to a custom domain.
+	Use the dashboard or CLI: `vercel env add NEXT_PUBLIC_SUPABASE_URL` etc., then `vercel env pull .env.local` for local parity.
+4. **Deploy**
+	- Click **Deploy** to create the Production environment.
+	- Enable **Preview Deployments** so every PR gets its own URL tied to the same Supabase project or a staging project.
+5. **Post-deploy**
+	- Map your custom domain and add it to Supabase Auth → Redirect URLs.
+	- Run `vercel logs <deployment-url>` if you need to inspect runtime errors.
+
+### Supabase (database + auth)
+
+- Run the SQL in `supabase/schema.sql` against your hosted project.
+- Store the service-role key solely inside Vercel’s encrypted envs—never commit it.
+- Schedule automated backups and RLS policy checks inside Supabase.
+
+### Railway (optional background jobs)
+
+- Railway is only needed if you plan to run cron jobs (e.g., nightly insights aggregation or reminder emails). Frontend + API routes live entirely on Vercel.
+- Recommended setup:
+	1. Create a **Railway project** and provision a **Node.js service** (or Scheduled Job) that connects to the same Supabase Postgres URL.
+	2. Copy the same Supabase env vars (`SUPABASE_SERVICE_ROLE_KEY`, `NEXT_PUBLIC_SUPABASE_URL`) into the Railway service variables. Never expose anon keys in worker logs.
+	3. Use Railway’s **Deploy Trigger** or cron schedule to execute scripts (e.g., `/railway/insights-cron.ts`) that call Supabase REST/RPC. These scripts can live in a `/workers` folder and be deployed through `railway up`.
+- Keep Railway detached until those workers exist; today’s app and APIs run fully on Vercel.
 
 ## Testing & Quality
 
