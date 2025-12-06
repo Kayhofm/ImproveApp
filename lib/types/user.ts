@@ -7,4 +7,5 @@ export interface ProfileSummary {
   role: UserRole;
   timezone?: string | null;
   createdAt: string;
+  programStartDate?: string | null;
 }

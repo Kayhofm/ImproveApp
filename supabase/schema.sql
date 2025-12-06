@@ -20,6 +20,7 @@ create table if not exists public.profiles (
   email text not null unique,
   full_name text,
   avatar_url text,
+  program_start_date date,
   timezone text,
   role user_role not null default 'viewer',
   created_at timestamptz not null default now(),

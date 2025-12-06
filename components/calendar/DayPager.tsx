@@ -8,11 +8,12 @@ interface DayPagerProps {
   currentDay: number;
   totalDays?: number;
   onChange: (day: number) => void;
+  dateLabel?: string;
 }
 
 const DEFAULT_TOTAL = 90;
 
-export function DayPager({ currentDay, onChange, totalDays = DEFAULT_TOTAL }: DayPagerProps) {
+export function DayPager({ currentDay, onChange, totalDays = DEFAULT_TOTAL, dateLabel }: DayPagerProps) {
   const handleNext = () => {
     if (currentDay < totalDays) onChange(currentDay + 1);
   };
@@ -27,7 +28,14 @@ export function DayPager({ currentDay, onChange, totalDays = DEFAULT_TOTAL }: Da
         <IconButton onClick={handlePrev} disabled={currentDay === 1}>
           <ArrowBackIcon />
         </IconButton>
-        <Typography variant="subtitle1">Day {currentDay}</Typography>
+        <Stack>
+          <Typography variant="subtitle1">Day {currentDay}</Typography>
+          {dateLabel ? (
+            <Typography variant="body2" color="text.secondary">
+              {dateLabel}
+            </Typography>
+          ) : null}
+        </Stack>
         <IconButton onClick={handleNext} disabled={currentDay === totalDays}>
           <ArrowForwardIcon />
         </IconButton>

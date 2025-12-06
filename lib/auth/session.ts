@@ -17,7 +17,7 @@ export const getCurrentProfile = cache(async (): Promise<ProfileSummary | null> 
 
     const { data, error } = await supabase
       .from("profiles")
-      .select("id, email, full_name, role, timezone, created_at")
+      .select("id, email, full_name, role, timezone, created_at, program_start_date")
       .eq("id", user.id)
       .maybeSingle();
 
@@ -35,6 +35,7 @@ export const getCurrentProfile = cache(async (): Promise<ProfileSummary | null> 
       role: data.role ?? ROLES.viewer,
       timezone: data.timezone,
       createdAt: data.created_at,
+      programStartDate: data.program_start_date,
     };
   } catch (error) {
     console.warn("Supabase session lookup failed", error);

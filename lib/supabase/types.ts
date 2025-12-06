@@ -30,6 +30,7 @@ export interface Database {
           email: string;
           full_name: string | null;
           avatar_url: string | null;
+          program_start_date: string | null;
           role: UserRole;
           timezone: string | null;
           created_at: string;
@@ -40,6 +41,7 @@ export interface Database {
           email: string;
           full_name?: string | null;
           avatar_url?: string | null;
+          program_start_date?: string | null;
           role?: UserRole;
           timezone?: string | null;
           created_at?: string;
@@ -50,6 +52,7 @@ export interface Database {
           email?: string;
           full_name?: string | null;
           avatar_url?: string | null;
+          program_start_date?: string | null;
           role?: UserRole;
           timezone?: string | null;
           created_at?: string;
