@@ -10,6 +10,7 @@ const typeLabels: Record<string, string> = {
   number: "Numeric",
   boolean: "Yes/No",
   select: "Select",
+  long_text: "Reflections",
 };
 
 export function InsightGroupCard({ group }: InsightGroupCardProps) {
@@ -24,11 +25,20 @@ export function InsightGroupCard({ group }: InsightGroupCardProps) {
           <Divider />
           <Stack spacing={1.5}>
             {group.items.map((item) => (
-              <Stack key={`${item.label}-${item.dayNumber}`} direction="row" justifyContent="space-between">
-                <Typography variant="body2" color="text.secondary">
+              <Stack
+                key={`${item.label}-${item.dayNumber}`}
+                direction="row"
+                spacing={2}
+                alignItems="baseline"
+              >
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ width: 80, flexShrink: 0 }}
+                >
                   Day {item.dayNumber}
                 </Typography>
-                <Typography variant="body1" fontWeight={600}>
+                <Typography variant="body1" fontWeight={600} sx={{ flex: 1 }}>
                   {item.value}
                 </Typography>
               </Stack>

@@ -32,7 +32,12 @@ export function InsightsBoard() {
       ) : (
         <Grid container spacing={3}>
           {data.map((group) => (
-            <Grid key={group.fieldType} item xs={12} md={6}>
+            <Grid
+              key={group.fieldType}
+              item
+              xs={12}
+              md={group.fieldType === "long_text" ? 12 : 6}
+            >
               <InsightGroupCard group={group} />
             </Grid>
           ))}
