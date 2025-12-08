@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { mockInsightsPayload } from "@/lib/mocks/insights";
 import { createSupabaseServerClient } from "@/lib/supabase/server-client";
 import type { TrackerSeries } from "@/lib/types/calendar";
+import { getDateFromStart } from "@/lib/utils/date";
 
 type TrackerRow = {
   numeric_value: number | null;
@@ -15,11 +16,28 @@ type TrackerRow = {
 export async function GET() {
   try {
     const supabase = createSupabaseServerClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("program_start_date")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    const programStartDate = profile?.program_start_date ?? null;
+
     const { data, error } = await supabase
       .from("calendar_entries")
       .select(
         "calendar_day_id, value, field_template:calendar_field_templates(field_label, field_type), day:calendar_days(day_number, day_date)"
       )
+      .eq("user_id", user.id)
       .limit(50)
       .order("updated_at", { ascending: false });
 
@@ -48,6 +66,7 @@ export async function GET() {
       .select(
         "numeric_value, boolean_value, created_at, behavior_template:calendar_behavior_templates(metric_key, metric_label), day:calendar_days(day_number, day_date)"
       )
+      .eq("user_id", user.id)
       .order("created_at", { ascending: true })
       .limit(300);
     const trackerMap = new Map<string, TrackerSeries>();
@@ -67,7 +86,10 @@ export async function GET() {
         }
 
         const dayNumber = row.day?.day_number ?? 0;
-        const date = row.day?.day_date ?? row.created_at ?? "";
+        const date =
+          programStartDate && dayNumber
+            ? getDateFromStart(programStartDate, dayNumber)
+            : row.day?.day_date ?? row.created_at ?? "";
 
         if (!trackerMap.has(metricKey)) {
           trackerMap.set(metricKey, {
