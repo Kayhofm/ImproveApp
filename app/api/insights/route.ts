@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 
-import { mockInsightsPayload } from "@/lib/mocks/insights";
 import { createSupabaseServerClient } from "@/lib/supabase/server-client";
 import type { TrackerSeries } from "@/lib/types/calendar";
 import { getDateFromStart } from "@/lib/utils/date";
@@ -110,7 +109,7 @@ export async function GET() {
 
     return NextResponse.json({ groups, trackers });
   } catch (error) {
-    console.warn("Falling back to mock insights", error);
-    return NextResponse.json(mockInsightsPayload);
+    console.error("Insights API failed", error);
+    return NextResponse.json({ message: "Insights are unavailable right now." }, { status: 500 });
   }
 }

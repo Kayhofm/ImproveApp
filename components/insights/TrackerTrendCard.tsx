@@ -63,7 +63,7 @@ export function TrackerTrendCard({ series, color }: TrackerTrendCardProps) {
             <LineChart data={chartData} margin={{ top: 8, right: 8, bottom: 8, left: 8 }}>
               <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} />
               <XAxis dataKey="dayNumber" tickFormatter={(value) => `Day ${value}`} fontSize={12} />
-              <YAxis allowDecimals={false} fontSize={12} />
+              <YAxis allowDecimals={false} fontSize={12} tickCount={7} domain={[1, 7]} />
               <Tooltip
                 formatter={(value: number) => value.toString()}
                 labelFormatter={(_, payload) =>

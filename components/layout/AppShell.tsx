@@ -138,9 +138,6 @@ export function AppShell({ role, profile, children }: AppShellProps) {
             </Avatar>
             <Box>
               <Typography variant="h6">Improve 90</Typography>
-              <Typography variant="body2" color="text.secondary">
-                Guided improvement program
-              </Typography>
             </Box>
           </Stack>
           <Chip label={roleLabels[role]} color="primary" variant="outlined" />
@@ -163,7 +160,7 @@ export function AppShell({ role, profile, children }: AppShellProps) {
           ))}
         </Tabs>
       </AppBar>
-      <Container maxWidth="lg" sx={{ py: 6 }}>{children}</Container>
+      <Container maxWidth="lg" sx={{ pt: 2, pb: 6 }}>{children}</Container>
       <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={closeMenu} keepMounted>
         {profile ? (
           <>

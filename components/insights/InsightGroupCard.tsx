@@ -14,9 +14,11 @@ const typeLabels: Record<string, string> = {
 };
 
 export function InsightGroupCard({ group }: InsightGroupCardProps) {
+  const isReflection = group.fieldType === "long_text";
+
   return (
     <Card>
-      <CardContent>
+      <CardContent sx={isReflection ? { px: { xs: 2, md: 3 }, pt: 3, pb: 3 } : undefined}>
         <Stack spacing={2}>
           <Stack direction="row" alignItems="center" justifyContent="space-between">
             <Typography variant="h6">{typeLabels[group.fieldType] ?? group.fieldType}</Typography>
@@ -30,6 +32,7 @@ export function InsightGroupCard({ group }: InsightGroupCardProps) {
                 direction="row"
                 spacing={2}
                 alignItems="baseline"
+                sx={isReflection ? { pl: { xs: 0.5, md: 1 }, pr: { xs: 0, md: 2 } } : undefined}
               >
                 <Typography
                   variant="body2"
