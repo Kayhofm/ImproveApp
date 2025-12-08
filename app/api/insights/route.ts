@@ -67,7 +67,7 @@ export async function GET() {
         }
 
         const dayNumber = row.day?.day_number ?? 0;
-        const date = row.created_at ?? row.day?.day_date ?? "";
+        const date = row.day?.day_date ?? row.created_at ?? "";
 
         if (!trackerMap.has(metricKey)) {
           trackerMap.set(metricKey, {

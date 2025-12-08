@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { Suspense, useEffect, useMemo, useState, type FormEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   Alert,
@@ -16,7 +16,7 @@ import { createSupabaseBrowserClient } from "@/lib/supabase/browser-client";
 
 const MIN_PASSWORD_LENGTH = 8;
 
-export default function AuthCallbackPage() {
+function CallbackContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const supabase = useMemo(() => createSupabaseBrowserClient(), []);
@@ -162,5 +162,24 @@ export default function AuthCallbackPage() {
         )}
       </Stack>
     </Container>
+  );
+}
+
+export default function AuthCallbackPage() {
+  return (
+    <Suspense
+      fallback={
+        <Container maxWidth="sm" sx={{ py: 8 }}>
+          <Stack direction="row" spacing={1} alignItems="center">
+            <CircularProgress size={20} />
+            <Typography variant="body2" color="text.secondary">
+              Loading reset flow…
+            </Typography>
+          </Stack>
+        </Container>
+      }
+    >
+      <CallbackContent />
+    </Suspense>
   );
 }

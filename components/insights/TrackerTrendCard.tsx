@@ -43,6 +43,12 @@ export function TrackerTrendCard({ series, color }: TrackerTrendCardProps) {
     [series.points]
   );
 
+  const firstPoint = chartData[0];
+  const lastPoint = chartData.at(-1);
+  const rangeLabel = chartData.length
+    ? `Day ${firstPoint?.dayNumber ?? "?"} · ${firstPoint?.shortDate ?? ""} – Day ${lastPoint?.dayNumber ?? "?"} · ${lastPoint?.shortDate ?? ""}`
+    : "No data";
+
   return (
     <Card>
       <CardContent>
@@ -50,7 +56,7 @@ export function TrackerTrendCard({ series, color }: TrackerTrendCardProps) {
           <Stack direction="row" justifyContent="space-between" alignItems="baseline">
             <Typography variant="h6">{series.metricLabel}</Typography>
             <Typography variant="caption" color="text.secondary">
-              {chartData[0]?.shortDate} – {chartData.at(-1)?.shortDate}
+              {rangeLabel}
             </Typography>
           </Stack>
           <ResponsiveContainer width="100%" height={200}>
