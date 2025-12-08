@@ -1,7 +1,6 @@
 import { Card, CardContent, Typography, Stack, Chip } from "@mui/material";
 
 import type { CalendarDayShape } from "@/lib/types/calendar";
-import { formatDisplayDate } from "@/lib/utils/date";
 
 interface AssignmentCardProps {
   day: CalendarDayShape;
@@ -16,9 +15,6 @@ export function AssignmentCard({ day }: AssignmentCardProps) {
             <Typography variant="h5">{day.assignmentTitle}</Typography>
             <Chip label={`Day ${day.dayNumber}`} color="primary" />
           </Stack>
-          <Typography variant="body2" color="text.secondary">
-            {formatDisplayDate(day.date)}
-          </Typography>
           {day.assignmentSummary && (
             <Typography variant="body1" color="text.primary">
               {day.assignmentSummary}

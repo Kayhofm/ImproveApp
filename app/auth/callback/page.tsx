@@ -25,6 +25,7 @@ function CallbackContent() {
   const [error, setError] = useState<string | null>(null);
   const [password, setPassword] = useState("");
   const [confirmation, setConfirmation] = useState("");
+  const [isRecoveryFlow, setIsRecoveryFlow] = useState(false);
 
   const code = searchParams.get("code");
   const type = searchParams.get("type");
@@ -56,7 +57,10 @@ function CallbackContent() {
           if (error) throw error;
         }
 
-        if ((resolvedType ?? "recovery") !== "recovery") {
+        const normalizedType = (resolvedType ?? "recovery").toLowerCase();
+        setIsRecoveryFlow(normalizedType === "recovery");
+
+        if (normalizedType !== "recovery") {
           router.replace("/dashboard");
           return;
         }
@@ -112,7 +116,7 @@ function CallbackContent() {
     setTimeout(() => router.replace("/dashboard"), 1200);
   }
 
-  const showForm = type === "recovery";
+  const showForm = isRecoveryFlow;
 
   return (
     <Container maxWidth="sm" sx={{ py: 8 }}>
