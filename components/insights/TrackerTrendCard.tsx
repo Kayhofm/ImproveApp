@@ -46,7 +46,7 @@ export function TrackerTrendCard({ series, color }: TrackerTrendCardProps) {
   const firstPoint = chartData[0];
   const lastPoint = chartData.at(-1);
   const rangeLabel = chartData.length
-    ? `Day ${firstPoint?.dayNumber ?? "?"} · ${firstPoint?.shortDate ?? ""} – Day ${lastPoint?.dayNumber ?? "?"} · ${lastPoint?.shortDate ?? ""}`
+    ? `${firstPoint?.shortDate ?? ""} – ${lastPoint?.shortDate ?? ""}`
     : "No data";
 
   return (

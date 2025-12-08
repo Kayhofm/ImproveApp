@@ -33,22 +33,30 @@ function CallbackContent() {
     let cancelled = false;
 
     async function handleExchange() {
-      if (!code) {
-        setError("Reset link is missing a verification code. Please request a new email.");
-        setStatus("ready");
-        return;
-      }
-
       try {
         setStatus("verifying");
         setError(null);
-        const { error } = await supabase.auth.exchangeCodeForSession(code);
+        let resolvedType = type;
 
-        if (error) {
-          throw error;
+        if (code) {
+          const { error } = await supabase.auth.exchangeCodeForSession(code);
+          if (error) throw error;
+        } else {
+          const hash = typeof window !== "undefined" ? window.location.hash.slice(1) : "";
+          const hashParams = hash ? new URLSearchParams(hash) : null;
+          const accessToken = hashParams?.get("access_token");
+          const refreshToken = hashParams?.get("refresh_token");
+          resolvedType = hashParams?.get("type") ?? resolvedType;
+
+          if (!accessToken || !refreshToken) {
+            throw new Error("Reset link is missing authentication details. Please request a new email.");
+          }
+
+          const { error } = await supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken });
+          if (error) throw error;
         }
 
-        if (type !== "recovery") {
+        if ((resolvedType ?? "recovery") !== "recovery") {
           router.replace("/dashboard");
           return;
         }
