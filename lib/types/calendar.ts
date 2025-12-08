@@ -76,3 +76,20 @@ export interface InsightItem {
   dayNumber: number;
   date: string;
 }
+
+export interface TrackerPoint {
+  dayNumber: number;
+  date: string;
+  value: number;
+}
+
+export interface TrackerSeries {
+  metricKey: string;
+  metricLabel: string;
+  points: TrackerPoint[];
+}
+
+export interface InsightsPayload {
+  groups: InsightGroup[];
+  trackers: TrackerSeries[];
+}
