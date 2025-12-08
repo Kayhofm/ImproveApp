@@ -8,9 +8,10 @@ export default function Home() {
 
     const { hash, search } = window.location;
     const hasAuthHash = Boolean(hash && hash.includes("access_token"));
-    const hasRecovery = Boolean(hash && hash.includes("type=recovery"));
+    const hasRecoveryHash = Boolean(hash && hash.includes("type=recovery"));
+    const hasRecoverySearch = Boolean(search && (search.includes("type=recovery") || search.includes("code=")));
 
-    if (hasAuthHash || hasRecovery) {
+    if (hasAuthHash || hasRecoveryHash || hasRecoverySearch) {
       window.location.replace(`/auth/callback${search}${hash}`);
       return;
     }
