@@ -37,6 +37,7 @@ import type { ProfileSummary } from "@/lib/types/user";
 
 const navItems: { label: string; href: string; roles?: UserRole[] }[] = [
   { label: "Calendar", href: "/calendar" },
+  { label: "Therapy", href: "/therapy" },
   { label: "Insights", href: "/insights" },
   { label: "Admin", href: "/admin", roles: [ROLES.admin] },
 ];

@@ -274,6 +274,39 @@ export interface Database {
           }
         ];
       };
+      therapy_sessions: {
+        Row: {
+          id: string;
+          user_id: string;
+          session_number: number;
+          session_date: string | null;
+          therapist: string | null;
+          session_summary: string | null;
+          summary: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          session_number: number;
+          session_date?: string | null;
+          therapist?: string | null;
+          session_summary?: string | null;
+          summary?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["therapy_sessions"]["Row"]>;
+        Relationships: [
+          {
+            foreignKeyName: "therapy_sessions_user_id_fkey";
+            columns: ["user_id"];
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
       insight_snapshots: {
         Row: {
           id: string;

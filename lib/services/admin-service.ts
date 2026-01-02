@@ -20,7 +20,8 @@ export async function inviteUser(payload: {
   });
 
   if (!response.ok) {
-    throw new Error("Unable to invite user");
+    const text = await response.text();
+    throw new Error(text || "Unable to invite user");
   }
 
   return response.json();

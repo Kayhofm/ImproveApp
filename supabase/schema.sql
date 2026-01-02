@@ -113,6 +113,19 @@ create table if not exists public.insight_snapshots (
   created_at timestamptz not null default now()
 );
 
+create table if not exists public.therapy_sessions (
+  id uuid primary key default uuid_generate_v4(),
+  user_id uuid not null references public.profiles(id) on delete cascade,
+  session_number int not null,
+  session_date date,
+  therapist text,
+  session_summary text,
+  summary text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  unique (user_id, session_number)
+);
+
 create or replace function public.is_admin(uid uuid)
 returns boolean
 language sql
@@ -134,6 +147,12 @@ grant execute on function public.is_admin(uuid) to service_role;
 alter table public.profiles enable row level security;
 alter table public.calendar_entries enable row level security;
 alter table public.behavior_logs enable row level security;
+alter table public.calendars enable row level security;
+alter table public.calendar_days enable row level security;
+alter table public.calendar_field_templates enable row level security;
+alter table public.calendar_behavior_templates enable row level security;
+alter table public.insight_snapshots enable row level security;
+alter table public.therapy_sessions enable row level security;
 
 create policy "Profiles are viewable per user" on public.profiles
   for select using (auth.uid() = id or public.is_admin(auth.uid()));
@@ -141,8 +160,57 @@ create policy "Profiles are viewable per user" on public.profiles
 create policy "Profiles self-manage" on public.profiles
   for update using (auth.uid() = id);
 
+create policy "Profiles insertable by admins" on public.profiles
+  for insert with check (public.is_admin(auth.uid()));
+
+create policy "Profiles manageable by admins" on public.profiles
+  for update using (public.is_admin(auth.uid()))
+  with check (public.is_admin(auth.uid()));
+
 create policy "Entries editable by owners" on public.calendar_entries
   for all using (auth.uid() = user_id);
 
 create policy "Behavior logs editable by owners" on public.behavior_logs
   for all using (auth.uid() = user_id);
+
+create policy "Calendars readable by authenticated users" on public.calendars
+  for select using (auth.uid() is not null or public.is_admin(auth.uid()));
+
+create policy "Calendars manageable by admins" on public.calendars
+  for all using (public.is_admin(auth.uid()))
+  with check (public.is_admin(auth.uid()));
+
+create policy "Calendar days readable by authenticated users" on public.calendar_days
+  for select using (auth.uid() is not null or public.is_admin(auth.uid()));
+
+create policy "Calendar days manageable by admins" on public.calendar_days
+  for all using (public.is_admin(auth.uid()))
+  with check (public.is_admin(auth.uid()));
+
+create policy "Field templates readable by authenticated users" on public.calendar_field_templates
+  for select using (auth.uid() is not null or public.is_admin(auth.uid()));
+
+create policy "Field templates manageable by admins" on public.calendar_field_templates
+  for all using (public.is_admin(auth.uid()))
+  with check (public.is_admin(auth.uid()));
+
+create policy "Behavior templates readable by authenticated users" on public.calendar_behavior_templates
+  for select using (auth.uid() is not null or public.is_admin(auth.uid()));
+
+create policy "Behavior templates manageable by admins" on public.calendar_behavior_templates
+  for all using (public.is_admin(auth.uid()))
+  with check (public.is_admin(auth.uid()));
+
+create policy "Insight snapshots readable by owners" on public.insight_snapshots
+  for select using (auth.uid() = user_id or public.is_admin(auth.uid()));
+
+create policy "Insight snapshots managed by owners" on public.insight_snapshots
+  for all using (auth.uid() = user_id or public.is_admin(auth.uid()))
+  with check (auth.uid() = user_id or public.is_admin(auth.uid()));
+
+create policy "Therapy sessions readable by owner" on public.therapy_sessions
+  for select using (auth.uid() = user_id or public.is_admin(auth.uid()));
+
+create policy "Therapy sessions upsert by owner" on public.therapy_sessions
+  for all using (auth.uid() = user_id or public.is_admin(auth.uid()))
+  with check (auth.uid() = user_id or public.is_admin(auth.uid()));
